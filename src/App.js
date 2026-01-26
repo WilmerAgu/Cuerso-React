@@ -5,20 +5,46 @@ import { TodoList } from './TodoList';
 import { CreateTodoButton } from './CreateTodoButton';
 import { TodoItem } from './TodoItem';
 
-const defaultTodos = [
-  { text: 'Llevar la ropa para entrenar', completed: true},
-  { text: 'Tomar el Cuerso de Intro a React.js', completed: false},
-  { text: 'Estudiar React', completed: true},
-  { text: 'Pasar por la caja menor', completed: true},
-  { text: 'Ir a la reunión de IA', completed: false},
+// const defaultTodos = [
+//   { text: 'Llevar la ropa para entrenar', completed: true},
+//   { text: 'Tomar el Cuerso de Intro a React.js', completed: false},
+//   { text: 'Estudiar React', completed: true},
+//   { text: 'Pasar por la caja menor', completed: true},
+//   { text: 'Ir a la reunión de IA', completed: false},
+// ];
+// localStorage.setItem('W_TODOS_V1', JSON.stringify(defaultTodos));
+// localStorage.removeItem('W_TODOS_V1');
 
-];
+
+function useLocalStorage(itemName, initialValue) {
+
+  const localStorageItem = localStorage.getItem(itemName);
+
+  let parsedItem;
+
+  if (!localStorageItem) {
+    localStorage.setItem(itemName, JSON.stringify(initialValue));
+    parsedItem = initialValue;
+  }else {
+    parsedItem = JSON.parse(localStorageItem);
+  }
+
+  const [item, setItem] = React.useState(parsedItem);
+
+   // este metodo es para guardar los nuevos todos actualizando los estados y el localStorage 
+  const saveItem = (newItem) => {
+    localStorage.setItem(itemName, JSON.stringify(newItem));
+    setItem(newItem);
+  };
+
+  return [item, saveItem];
+};
 
 
 function App() {
-  const [todos, setTodos] = React.useState(defaultTodos);
+ 
+  const [todos, saveTodos] = useLocalStorage('W_TODOS_V1', []);
   const [searchValue, setSearchValue] =  React.useState('');
-  console.log('los usuarios buscan: ' + searchValue);
 
   const completedTodos = todos.filter(todo => !!todo.completed).length;
   const totalTodos = todos.length;
@@ -31,7 +57,14 @@ function App() {
 
       return todoText.includes(searchText);
     }
-  )
+  );
+
+  // este metodo es para guardar los nuevos todos actualizando los estados y el localStorage 
+  const saveItem = (newTodos) => {
+    localStorage.setItem('W_TODOS_V1', JSON.stringify(newTodos));
+
+    saveTodos(newTodos);
+  }
 
   const completeTodo = (text) => {
     const newTodos = [...todos];
@@ -39,8 +72,8 @@ function App() {
       (todo) => todo.text == text
     );
     newTodos [todoIndex].completed = true;
-    setTodos(newTodos);
-  }
+    saveTodos(newTodos);
+  };
 
   const deleteTodo = (text) => {
     const newTodos = [...todos];
@@ -48,8 +81,8 @@ function App() {
       (todo) => todo.text == text
     );
     newTodos.splice(todoIndex, 1);
-    setTodos(newTodos);
-  }
+    saveTodos(newTodos);
+  };
   
   return (
     <>
@@ -74,8 +107,7 @@ function App() {
         ))}
       </TodoList> 
       <CreateTodoButton />
-
-    </>
+   </>
   );
 }
 
