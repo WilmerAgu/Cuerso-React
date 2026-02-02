@@ -1,0 +1,42 @@
+.todo-message {
+  padding: 16px 20px;
+  margin: 40px auto;
+  max-width: 400px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 900;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Estado: Cargando */
+.todo-message.loading {
+  background-color: #eef6ff;
+  color: #1d4ed8;
+}
+
+/* Estado: Error */
+.todo-message.error {
+  background-color: #fff1f2;
+  color: #be123c;
+  border: 1px solid #fecdd3;
+}
+
+/* Estado: Lista vacía */
+.todo-message.empty {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px dashed #86efac;
+}
+
+/* Animación suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
